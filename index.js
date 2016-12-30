@@ -1,7 +1,23 @@
-var builder = require('botbuilder');
-var apiairecognizer = require('api-ai-recognizer');
+var builder = require('botbuilder');  
+var restify = require('restify');  
+var apiairecognizer = require('api-ai-recognizer');  
+var request = require('request');
 
-var connector = new builder.ConsoleConnector().listen();
+//=========================================================
+// Bot Setup
+//=========================================================
+
+// Setup Restify Server
+var server = restify.createServer();  
+server.listen(process.env.port || process.env.PORT || 3978, function () {  
+   console.log('%s listening to %s', server.name, server.url); 
+});
+
+// Create chat bot
+var connector = new builder.ChatConnector({  
+    appId: 'cf64e56e-6d63-404c-ada6-fbd82a0304bf',
+    appPassword: 'hTEeY9osDMxO0xUrsCgptD6'
+});
 var bot = new builder.UniversalBot(connector);
 
 var recognizer = new apiairecognizer('7c60839dd93244dba8ce1469b3942f8e');
