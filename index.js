@@ -14,13 +14,13 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat bot
 var connector = new builder.ChatConnector({  
-    appId: 'f2082879-8178-45d5-bf25-673b5e5c1fc6',
-    appPassword: 'jtqPRuuL7Yn0fP2ee5Ly3qq'
+    appId: '<app.id>',
+    appPassword: '<app.password>'
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
-var recognizer = new apiairecognizer('7c60839dd93244dba8ce1469b3942f8e');
+var recognizer = new apiairecognizer('<api.ai key>');
 var intents = new builder.IntentDialog({
         recognizers: [recognizer]
 });
@@ -1223,6 +1223,7 @@ intents.matches('hi',function(session){
 });
 
 intents.matches('findPassword',function(session,args){
+    session.sendTyping();
     var airport = builder.EntityRecognizer.findEntity(args.entities,'airports');
     var city = builder.EntityRecognizer.findEntity(args.entities,'geo-city');
     var country = builder.EntityRecognizer.findEntity(args.entities,'geo-country');
@@ -1236,8 +1237,10 @@ intents.matches('findPassword',function(session,args){
             var airports = data.airports.filter(function(element){
             return element.country.toLowerCase() === country.entity.toLowerCase();
             });
-            session.send("We found " + airports.length + " airports in " + country.entity);
 
+            if (airports.length == 0){
+                session.endDialog("Sorry I do not have much info about the airports there");
+            }
             var attchments = [];
 
             for (var i=0;i<airports.length;i++){
@@ -1260,7 +1263,27 @@ intents.matches('findPassword',function(session,args){
         var airports = data.airports.filter(function(element){
             return element.city.toLowerCase() === city.entity.toLowerCase();
         });
-        session.send("We found " + airports.length + " airports in " + city.entity);
+
+        if (airports.length == 0){
+                session.endDialog("Sorry I do not have much info about the airports there");
+        }
+
+        var attchments = [];
+
+        for (var i=0;i<airports.length;i++){
+            var attachment = new builder.HeroCard(session)
+                                .title(airports[i]['name'])
+                                .subtitle(airports[i]['city'])
+                                .buttons([
+                                    builder.CardAction.imBack(session, airports[i]['name'], "Select")
+                                ]);
+            attchments.push(attachment);
+        }
+
+        var msg = new builder.Message(session)
+                        .attachmentLayout(builder.AttachmentLayout.carousel)
+                        .attachments(attchments);
+        session.endDialog(msg);
     }
     else if (airport){
         var airports = data.airports.filter(function(element){
@@ -1285,10 +1308,31 @@ intents.matches('findPassword',function(session,args){
                     return element.city.toLowerCase() === city.entity.toLowerCase();
                 });
 
-                session.send("We found " + airports.length + " airports in " + city.entity);
+                if (airports.length == 0){
+                    session.endDialog("Sorry I do not know much about that airport");
+                }
+
+                var attchments = [];
+
+                for (var i=0;i<airports.length;i++){
+                    var attachment = new builder.HeroCard(session)
+                                        .title(airports[i]['name'])
+                                        .subtitle(airports[i]['city'])
+                                        .buttons([
+                                            builder.CardAction.imBack(session, airports[i]['name'], "Select")
+                                        ]);
+                    attchments.push(attachment);
+                }
+
+                var msg = new builder.Message(session)
+                                .attachmentLayout(builder.AttachmentLayout.carousel)
+                                .attachments(attchments);
+                session.endDialog(msg);
             }
         }
-        
+    }
+    else{
+        session.send("Can you be more specific? Type in the airport name, city name or the country name?");
     }
 });
 
