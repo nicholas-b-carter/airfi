@@ -1247,7 +1247,7 @@ intents.matches('findPassword',function(session,args){
                                     .buttons([
                                         builder.CardAction.imBack(session, airports[i]['name'], "Select")
                                     ]);
-                attchments.append(attachment);
+                attchments.push(attachment);
             }
 
             var msg = new builder.Message(session)
