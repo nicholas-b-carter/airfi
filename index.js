@@ -1247,12 +1247,13 @@ intents.matches('findPassword',function(session,args){
                                     .buttons([
                                         builder.CardAction.imBack(session, airports[i]['name'], "Select")
                                     ]);
+                attchments.append(attachment);
             }
 
             var msg = new builder.Message(session)
                             .attachmentLayout(builder.AttachmentLayout.carousel)
                             .attachments(attchments);
-                session.endDialog(msg);
+            session.endDialog(msg);
         }
     }
     else if(city){
