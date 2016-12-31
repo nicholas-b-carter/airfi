@@ -1,7 +1,6 @@
 var builder = require('botbuilder');  
 var restify = require('restify');  
 var apiairecognizer = require('api-ai-recognizer');  
-var request = require('request');
 
 //=========================================================
 // Bot Setup
