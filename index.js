@@ -18,6 +18,7 @@ var connector = new builder.ChatConnector({
     appPassword: 'jtqPRuuL7Yn0fP2ee5Ly3qq'
 });
 var bot = new builder.UniversalBot(connector);
+server.post('/api/messages', connector.listen());
 
 var recognizer = new apiairecognizer('7c60839dd93244dba8ce1469b3942f8e');
 var intents = new builder.IntentDialog({
