@@ -12,6 +12,6 @@
   "dependencies": {
     "api-ai-recognizer": "^1.0.1",
     "botbuilder": "^3.4.4",
-    "restify": "^4.3.0"
+    "restify": "^8.1.0"
   }
 }
